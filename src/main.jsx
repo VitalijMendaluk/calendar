@@ -8,7 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { createClient } from "@supabase/supabase-js";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 import { uk } from "date-fns/locale";
-import { CalendarDays, ChevronLeft, ChevronRight, Plus, Search, LogOut, Bell, Download, X, Clock3, MapPin, Pencil, Trash2 } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Plus, Search, Bell, Download, X, Clock3, MapPin, Pencil, Trash2 } from "lucide-react";
 import "./style.css";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -33,11 +33,6 @@ const decodeKey = (base64) => {
 };
 
 function App() {
-  const [session, setSession] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [authError, setAuthError] = useState("");
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
@@ -56,24 +51,7 @@ function App() {
     return { title: "", timezone: zone, start_local: toLocalInput(rounded.toISOString(), zone), duration: 60, notes: "" };
   }
 
-  useEffect(() => {
-    if (!supabase) { setAuthLoading(false); return; }
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setAuthLoading(false);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => { if (session) loadEvents(); }, [session]);
-
-  async function signIn(e) {
-    e.preventDefault(); setAuthError("");
-    if (!supabase) return setAuthError("Спочатку додай змінні Supabase у Vercel.");
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    if (error) setAuthError("Не вдалося увійти. Перевір email і пароль.");
-  }
+  useEffect(() => { if (supabase) loadEvents(); }, []);
 
   async function loadEvents() {
     setLoading(true);
@@ -189,26 +167,12 @@ function App() {
     extendedProps: { row }
   })).filter((e) => !search || e.title.toLowerCase().includes(search.toLowerCase()) || (e.extendedProps.row.notes || "").toLowerCase().includes(search.toLowerCase())), [events, search]);
 
-  if (authLoading) return <div className="splash">Завантаження…</div>;
-  if (!session) return <main className="login-shell"><div className="login-card">
-    <div className="brand-mark"><CalendarDays size={22}/></div><p className="eyebrow">PERSONAL WORKSPACE</p>
-    <h1>Мій календар</h1><p className="muted">Особистий простір для консультацій</p>
-    <form onSubmit={signIn} className="login-form">
-      <label>Email<input type="email" autoComplete="username" value={email} onChange={e=>setEmail(e.target.value)} required /></label>
-      <label>Пароль<input type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} required /></label>
-      {authError && <p className="error">{authError}</p>}
-      <button className="primary full" type="submit">Увійти</button>
-    </form>
-    <p className="tiny muted">Доступ лише для власника календаря.</p>
-  </div></main>;
-
   return <main className="app-shell">
     <header className="topbar">
       <div className="brand"><div className="brand-mark"><CalendarDays size={20}/></div><div><strong>Мій календар</strong><span>Особисті консультації</span></div></div>
       <div className="top-actions">
         <button className="icon-btn" title="Увімкнути нагадування" onClick={enablePush}><Bell size={18}/></button>
         <button className="icon-btn" title="Завантажити резервну копію" onClick={exportData}><Download size={18}/></button>
-        <button className="icon-btn" title="Вийти" onClick={()=>supabase.auth.signOut()}><LogOut size={18}/></button>
       </div>
     </header>
     <section className="toolbar">

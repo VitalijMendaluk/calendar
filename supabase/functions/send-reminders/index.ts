@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
     const { data: subscriptions } = await db
       .from("push_subscriptions")
       .select("id, endpoint, subscription")
-      .eq("owner_id", item.owner_id);
+      .limit(100);
 
     if (!subscriptions?.length) continue;
 
