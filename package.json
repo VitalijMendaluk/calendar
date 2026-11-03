@@ -1,7 +1,7 @@
 {
-  "name": "personal-consultation-calendar",
+  "name": "personal-calendar-local",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
@@ -13,14 +13,9 @@
     "@fullcalendar/daygrid": "^6.1.19",
     "@fullcalendar/interaction": "^6.1.19",
     "@fullcalendar/list": "^6.1.19",
+    "@fullcalendar/luxon3": "^6.1.19",
     "@fullcalendar/timegrid": "^6.1.19",
-    "@fullcalendar/react": "^6.1.19",
-    "@supabase/supabase-js": "^2.57.0",
-    "date-fns": "^4.1.0",
-    "date-fns-tz": "^3.2.0",
-    "lucide-react": "^0.468.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "luxon": "^3.7.2",
     "vite": "^6.1.0"
   },
   "devDependencies": {}

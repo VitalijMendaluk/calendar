@@ -1,19 +1,98 @@
 <!doctype html>
 <html lang="uk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#f7f8fa" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Мій календар" />
-    <meta name="description" content="Персональний календар консультацій" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
-    <title>Мій календар</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f8fa" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Мій календар" />
+  <meta name="description" content="Особистий календар консультацій" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <title>Мій календар</title>
+</head>
+<body>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">▦</div>
+        <div><strong>Мій календар</strong><span>Особисті консультації</span></div>
+      </div>
+      <div class="top-actions">
+        <button id="notify-btn" class="icon-btn" type="button" title="Дозволити сповіщення" aria-label="Сповіщення">♧</button>
+        <button id="import-btn" class="icon-btn" type="button" title="Імпорт резервної копії" aria-label="Імпорт">↑</button>
+        <button id="export-btn" class="icon-btn" type="button" title="Завантажити резервну копію" aria-label="Експорт">↓</button>
+        <input id="import-file" type="file" accept="application/json,.json" hidden />
+      </div>
+    </header>
+    <section class="toolbar">
+      <div class="toolbar-left">
+        <button id="today-btn" class="today-btn" type="button">Сьогодні</button>
+        <button id="prev-btn" class="nav-btn" type="button" aria-label="Попередній період">‹</button>
+        <button id="next-btn" class="nav-btn" type="button" aria-label="Наступний період">›</button>
+        <h2 id="month-title">Календар</h2>
+      </div>
+      <div class="toolbar-right">
+        <label class="searchbox"><span aria-hidden="true">⌕</span><input id="search" placeholder="Пошук" autocomplete="off" /></label>
+        <button id="new-btn" class="primary add-btn" type="button">＋ <span>Нова консультація</span></button>
+      </div>
+    </section>
+    <section class="calendar-card">
+      <div id="calendar"></div>
+      <div class="timezone-note">
+        <span>◷</span><span>Час календаря: Тбілісі · Asia/Tbilisi</span>
+        <span id="count-label" class="count-label"></span>
+      </div>
+    </section>
+    <p id="privacy-note" class="privacy"></p>
+  </main>
+
+  <dialog id="event-modal" class="event-modal">
+    <div class="modal-head">
+      <div><p class="eyebrow">PERSONAL CALENDAR</p><h3 id="modal-title">Нова консультація</h3></div>
+      <button id="close-modal" class="icon-btn" type="button" aria-label="Закрити">×</button>
+    </div>
+    <form id="event-form">
+      <label>Назва / ім'я клієнта
+        <input id="event-title" type="text" maxlength="160" placeholder="Наприклад, Марія — консультація" required />
+      </label>
+      <label>Часовий пояс клієнта
+        <select id="event-zone">
+          <option value="Asia/Tbilisi">Грузія · Тбілісі</option>
+          <option value="Europe/Kyiv">Україна · Київ</option>
+          <option value="Europe/Warsaw">Польща · Варшава</option>
+        </select>
+      </label>
+      <div class="form-grid">
+        <label>Дата та час клієнта
+          <input id="event-start" type="datetime-local" required />
+        </label>
+        <label>Тривалість
+          <select id="event-duration">
+            <option value="30">30 хв</option>
+            <option value="45">45 хв</option>
+            <option value="60" selected>60 хв</option>
+            <option value="90">90 хв</option>
+            <option value="120">120 хв</option>
+          </select>
+        </label>
+      </div>
+      <div id="time-preview" class="time-preview">У Тбілісі: —</div>
+      <label>Нотатки
+        <textarea id="event-notes" rows="4" maxlength="5000" placeholder="Довільна інформація про консультацію…"></textarea>
+      </label>
+      <p class="reminder-line">Нагадування: браузерне сповіщення за 30 хвилин, якщо календар відкритий.</p>
+      <div class="modal-actions">
+        <button id="delete-btn" class="danger-btn" type="button" hidden>Видалити</button>
+        <button id="cancel-btn" class="secondary" type="button">Скасувати</button>
+        <button class="primary" type="submit">Зберегти</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
 </html>
